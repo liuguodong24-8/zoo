@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package api.pledge.v1;
+import "google/api/annotations.proto";
+option go_package = "helloworld/api/pledge/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.pledge.v1";
+
+service Pledge {
+	rpc CreatePledge (CreatePledgeRequest) returns (CreatePledgeReply){
+		option (google.api.http) = {
+			post: "/pledge",
+			body: "*"
+		};
+	};
+	rpc UpdatePledge (UpdatePledgeRequest) returns (UpdatePledgeReply);
+	rpc DeletePledge (DeletePledgeRequest) returns (DeletePledgeReply);
+	rpc GetPledge (GetPledgeRequest) returns (GetPledgeReply) {
+		option (google.api.http) = {
+			get: "/pledge/{address}",
+		};
+	};
+	rpc ListPledge (ListPledgeRequest) returns (ListPledgeReply);
+}
+
+message CreatePledgeRequest {
+	string address = 1;
+	int64 price = 2;
+}
+message CreatePledgeReply {
+	int32  code = 1;
+	string msg = 2;
+}
+
+message UpdatePledgeRequest {}
+message UpdatePledgeReply {}
+
+message DeletePledgeRequest {}
+message DeletePledgeReply {}
+
+message PledgeInfo {
+		int32 id = 1;
+		int32 token_id = 2;
+	  int64 price = 3;
+		int32 status = 4;
+		int32 times = 5;
+	  string address = 6;
+}
+
+message GetPledgeRequest {
+	string address = 1;
+}
+message GetPledgeReply {
+	int32  code = 1;
+	string msg = 2;
+	PledgeInfo data = 3;
+}
+
+message ListPledgeRequest {}
+message ListPledgeReply {}

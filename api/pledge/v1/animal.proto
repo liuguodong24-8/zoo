@@ -1,0 +1,131 @@
+syntax = "proto3";
+
+package api.pledge.v1;
+import "google/api/annotations.proto";
+option go_package = "helloworld/api/pledge/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.pledge.v1";
+
+service Animal {
+	rpc CreateAnimal (CreateAnimalRequest) returns (CreateAnimalReply) {
+		option (google.api.http) = {
+			post: "/animal",
+			body: "*"
+		};
+	};
+	rpc UpdateAnimal (UpdateAnimalRequest) returns (UpdateAnimalReply);
+	rpc DeleteAnimal (DeleteAnimalRequest) returns (DeleteAnimalReply);
+	rpc GetAnimal (GetAnimalRequest) returns (GetAnimalReply) {
+		option (google.api.http) = {
+			get: "/animal/{token_id}",
+		};
+	};
+	rpc ListAnimal (ListAnimalRequest) returns (ListAnimalReply){
+		option (google.api.http) = {
+			get: "/animals"
+		};
+	};
+	rpc KillAnimal (KillAnimalRequest) returns (KillAnimalReply) {
+		option (google.api.http) = {
+			post: "/animal/kill",
+			body: "*"
+		};
+	};
+	rpc FeedingAnimal (FeedingAnimalRequest) returns (FeedingAnimalReply) {
+		option (google.api.http) = {
+			post: "/animal/feeding",
+			body: "*"
+		};
+	};
+	rpc ComposeAnimal (ComposeAnimalRequest) returns (ComposeAnimalReply) {
+		option (google.api.http) = {
+			post: "/animal/compose",
+			body: "*"
+		};
+	};
+}
+
+message CreateAnimalRequest {
+	string address = 1;
+	int64 stake_amount = 2;
+	int64 level = 3;
+	int64 category = 4;
+	int64 capacity = 5;
+	int64 volume = 6;
+	int64 rarity = 7;
+	int64 sex = 8;
+	int64 age = 9;
+	int64 token_id = 10;
+}
+message CreateAnimalReply {
+	int32  code = 1;
+	string msg = 2;
+}
+
+message UpdateAnimalRequest {}
+message UpdateAnimalReply {}
+
+message DeleteAnimalRequest {}
+message DeleteAnimalReply {}
+
+message AnimalInfo {
+	int64 id = 1;
+	string address = 2;
+	int64 stake_amount = 3;
+	int64 level = 4;
+	int64 category = 5;
+	int64 capacity = 6;
+	int64 volume = 7;
+	int64 rarity = 8;
+	int64 sex = 9;
+	int64 age = 10;
+	int64 token_id = 11;
+	string img_url = 12;
+	int64 status = 13;
+	int64 start_time = 14;
+}
+
+message GetAnimalRequest {
+	int64 token_id = 1;
+}
+message GetAnimalReply {
+	int32  code = 1;
+	string msg = 2;
+	AnimalInfo data = 3;
+}
+
+message ListAnimalRequest {
+	int32 page = 1;
+	int32 page_size = 2;
+}
+message ListAnimalReply {
+	int32  code = 1;
+	string msg = 2;
+	repeated AnimalInfo data = 3;
+}
+
+message KillAnimalRequest {
+	int64 token_id = 1;
+}
+message KillAnimalReply {
+	int32  code = 1;
+	string msg = 2;
+}
+message FeedingAnimalRequest {
+	int64 from_token_id = 1;
+	int64 to_token_id = 2;
+}
+message FeedingAnimalReply {
+	int32  code = 1;
+	string msg = 2;
+}
+
+message ComposeAnimalRequest {
+	int64 token_id1 = 1;
+	int64 token_id2 = 2;
+}
+
+message ComposeAnimalReply {
+	int32  code = 1;
+	string msg = 2;
+}
