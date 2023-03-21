@@ -24,6 +24,19 @@ func NewPledgeRepo(data *Data, logger log.Logger) biz.PledgeRepo {
 }
 
 func (repo *pledgeRepo) Save(ctx context.Context, ple *biz.Pledge) (*biz.Pledge, error) {
+
+	var p biz.Pledge
+	repo.data.gormDB.Where("address = ?", ple.Address).First(&p) // gorm
+
+	if p.Address != "" {
+		ple.Price = p.Price + ple.Price
+		tx := repo.data.gormDB.Where("address = ?", ple.Address).Updates(ple)
+		if tx.Error != nil {
+			return &biz.Pledge{}, tx.Error
+		}
+		return ple, nil
+	}
+
 	zoo, _ := util.NewZoo(common.HexToAddress(repo.data.c.Eth.ZooAddr), repo.data.ethClient)
 	stake, err := zoo.GetUserPledge(&bind.CallOpts{}, common.HexToAddress(ple.Address))
 	if err != nil {
