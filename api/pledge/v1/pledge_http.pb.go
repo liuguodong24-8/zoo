@@ -21,15 +21,18 @@ const _ = http.SupportPackageIsVersion1
 
 const OperationPledgeCreatePledge = "/api.pledge.v1.Pledge/CreatePledge"
 const OperationPledgeGetPledge = "/api.pledge.v1.Pledge/GetPledge"
+const OperationPledgeUpdatePledgeStatus = "/api.pledge.v1.Pledge/UpdatePledgeStatus"
 
 type PledgeHTTPServer interface {
 	CreatePledge(context.Context, *CreatePledgeRequest) (*CreatePledgeReply, error)
 	GetPledge(context.Context, *GetPledgeRequest) (*GetPledgeReply, error)
+	UpdatePledgeStatus(context.Context, *UpdatePledgeStatusRequest) (*UpdatePledgeStatusReply, error)
 }
 
 func RegisterPledgeHTTPServer(s *http.Server, srv PledgeHTTPServer) {
 	r := s.Route("/")
 	r.POST("/pledge", _Pledge_CreatePledge0_HTTP_Handler(srv))
+	r.POST("/pledge/status", _Pledge_UpdatePledgeStatus0_HTTP_Handler(srv))
 	r.GET("/pledge/{address}", _Pledge_GetPledge0_HTTP_Handler(srv))
 }
 
@@ -48,6 +51,25 @@ func _Pledge_CreatePledge0_HTTP_Handler(srv PledgeHTTPServer) func(ctx http.Cont
 			return err
 		}
 		reply := out.(*CreatePledgeReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Pledge_UpdatePledgeStatus0_HTTP_Handler(srv PledgeHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in UpdatePledgeStatusRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationPledgeUpdatePledgeStatus)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.UpdatePledgeStatus(ctx, req.(*UpdatePledgeStatusRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*UpdatePledgeStatusReply)
 		return ctx.Result(200, reply)
 	}
 }
@@ -77,6 +99,7 @@ func _Pledge_GetPledge0_HTTP_Handler(srv PledgeHTTPServer) func(ctx http.Context
 type PledgeHTTPClient interface {
 	CreatePledge(ctx context.Context, req *CreatePledgeRequest, opts ...http.CallOption) (rsp *CreatePledgeReply, err error)
 	GetPledge(ctx context.Context, req *GetPledgeRequest, opts ...http.CallOption) (rsp *GetPledgeReply, err error)
+	UpdatePledgeStatus(ctx context.Context, req *UpdatePledgeStatusRequest, opts ...http.CallOption) (rsp *UpdatePledgeStatusReply, err error)
 }
 
 type PledgeHTTPClientImpl struct {
@@ -107,6 +130,19 @@ func (c *PledgeHTTPClientImpl) GetPledge(ctx context.Context, in *GetPledgeReque
 	opts = append(opts, http.Operation(OperationPledgeGetPledge))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *PledgeHTTPClientImpl) UpdatePledgeStatus(ctx context.Context, in *UpdatePledgeStatusRequest, opts ...http.CallOption) (*UpdatePledgeStatusReply, error) {
+	var out UpdatePledgeStatusReply
+	pattern := "/pledge/status"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationPledgeUpdatePledgeStatus))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
 		return nil, err
 	}

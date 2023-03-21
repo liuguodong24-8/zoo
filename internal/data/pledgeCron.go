@@ -1,10 +1,13 @@
 package data
 
 import (
+	"context"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/robfig/cron"
 	"helloworld/internal/biz"
-	"time"
+	"helloworld/internal/conf"
+	"helloworld/internal/util"
 )
 
 // 定时任务
@@ -12,6 +15,7 @@ import (
 type pledgeCronRepo struct {
 	data *Data
 	log  *log.Helper
+	conf *conf.Data
 }
 
 func (c *pledgeCronRepo) Run() {
@@ -24,15 +28,23 @@ func (c *pledgeCronRepo) Run() {
 	// 释放连接
 	defer rows.Close()
 
+	param, err := c.data.ethClient.GetPrivate(context.TODO(), c.conf.Eth.ZooPrivate)
+	zoo, _ := util.NewZoo(common.HexToAddress(c.conf.Eth.ZooAddr), c.data.ethClient)
+
 	var pledge biz.Pledge
 	// 每行单独加载执行业务
 	for rows.Next() {
 		c.data.gormDB.ScanRows(rows, &pledge)
 		// 状态为正在质押，且时间超过7天
-		if pledge.Status == 1 && ((pledge.UpdateAt.Unix() + 7*24*3600) < time.Now().Unix()) {
-			c.data.gormDB.Table("pledges").Where("id", pledge.ID).Update("times", pledge.Times+1)
-
+		//if pledge.Status == 1 && ((pledge.UpdateAt.Unix() + 7*24*3600) < time.Now().Unix()) {
+		//	c.data.gormDB.Table("pledges").Where("id", pledge.ID).Update("times", pledge.Times+1)
+		//}
+		hash, err := zoo.AddEgg(param, common.HexToAddress(pledge.Address))
+		if err != nil {
+			c.log.Error(err)
 		}
+		c.log.Info("Hash:%s", hash)
+		//fmt.Println(c.data.ethClient.BlockNumber(context.TODO()))
 	}
 }
 
@@ -47,8 +59,9 @@ func InitTimer(data *Data) {
 	// 在26分、29分、33分执行一次："0 26,29,33 * * * ?"
 	// 每天的0点、13点、18点、21点都执行一次："0 0 0,13,18,21 * * ?"
 
-	Conrs.AddJob("*/5 * * * * ?", &pledgeCronRepo{
+	Conrs.AddJob("*/40 * * * * ?", &pledgeCronRepo{
 		data: data,
 		log:  nil,
+		conf: data.c,
 	})
 }

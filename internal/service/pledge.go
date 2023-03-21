@@ -42,12 +42,31 @@ func (s *PledgeService) CreatePledge(ctx context.Context, req *pb.CreatePledgeRe
 		Msg:  "",
 	}, nil
 }
+
+func (s *PledgeService) UpdatePledgeStatus(ctx context.Context, req *pb.UpdatePledgeStatusRequest) (*pb.UpdatePledgeStatusReply, error) {
+	_, err := s.ple.UpdatePledgeStatus(ctx, &biz.Pledge{
+		Address: req.Address,
+	})
+	if err != nil {
+		return &pb.UpdatePledgeStatusReply{
+			Code: 410,
+			Msg:  err.Error(),
+		}, err
+	}
+	return &pb.UpdatePledgeStatusReply{
+		Code: 0,
+		Msg:  "",
+	}, nil
+}
+
 func (s *PledgeService) UpdatePledge(ctx context.Context, req *pb.UpdatePledgeRequest) (*pb.UpdatePledgeReply, error) {
 	return &pb.UpdatePledgeReply{}, nil
 }
+
 func (s *PledgeService) DeletePledge(ctx context.Context, req *pb.DeletePledgeRequest) (*pb.DeletePledgeReply, error) {
 	return &pb.DeletePledgeReply{}, nil
 }
+
 func (s *PledgeService) GetPledge(ctx context.Context, req *pb.GetPledgeRequest) (*pb.GetPledgeReply, error) {
 	ple, err := s.ple.GetPledge(ctx, req.Address)
 	if err != nil {

@@ -39,12 +39,11 @@ func NewGormDB(c *conf.Data) (*gorm.DB, error) {
 
 // NewData .
 func NewData(c *conf.Data, logger log.Logger, db *gorm.DB) (*Data, func(), error) {
-	client, close, err := NewEthClient("http://1.2.3")
+	client, close, err := NewEthClient(c.Eth.EthAddr)
 	if err != nil {
 		close()
 		return nil, func() {}, err
 	}
-
 	data := &Data{gormDB: db, ethClient: client, c: c}
 	// 启动定时任务
 	//go InitTimer(data)

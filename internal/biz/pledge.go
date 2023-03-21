@@ -21,6 +21,7 @@ type Pledge struct {
 type PledgeRepo interface {
 	Save(ctx context.Context, pledge *Pledge) (*Pledge, error)
 	Get(ctx context.Context, pledge *Pledge) (*Pledge, error)
+	UpdatePledgeStatus(ctx context.Context, ple *Pledge) (bool, error)
 	GetPledge(context.Context, string) (*Pledge, error)                  // 根据 id 获取学生信息
 	GetPledges(context.Context, string, int32, int32) ([]*Pledge, error) // 获取学生信息
 }
@@ -38,6 +39,11 @@ func NewPledgeCase(repo PledgeRepo, logger log.Logger) *PledgeCase {
 func (uc *PledgeCase) CreatePledge(ctx context.Context, ple *Pledge) (*Pledge, error) {
 	uc.log.WithContext(ctx).Info("CreateStudent: %v", ple.ID)
 	return uc.repo.Save(ctx, ple)
+}
+
+func (uc *PledgeCase) UpdatePledgeStatus(ctx context.Context, ple *Pledge) (bool, error) {
+	uc.log.WithContext(ctx).Info("UpdatePledgeStatus: %v", ple.Address)
+	return uc.repo.UpdatePledgeStatus(ctx, ple)
 }
 
 func (uc *PledgeCase) GetPledge(ctx context.Context, address string) (*Pledge, error) {

@@ -23,7 +23,7 @@ func NewAnimalService(ac *biz.AnimalCase, logger log.Logger) *AnimalService {
 }
 
 func (s *AnimalService) CreateAnimal(ctx context.Context, req *pb.CreateAnimalRequest) (*pb.CreateAnimalReply, error) {
-	_, err := s.ple.CreateAnimal(ctx, &biz.Animal{
+	_, err := s.ple.CreateAnimal(ctx, &biz.AnimalRequest{
 		TokenId:     req.TokenId,
 		Address:     req.Address,
 		Level:       req.Level,

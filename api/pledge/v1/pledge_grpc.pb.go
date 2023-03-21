@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PledgeClient interface {
 	CreatePledge(ctx context.Context, in *CreatePledgeRequest, opts ...grpc.CallOption) (*CreatePledgeReply, error)
+	UpdatePledgeStatus(ctx context.Context, in *UpdatePledgeStatusRequest, opts ...grpc.CallOption) (*UpdatePledgeStatusReply, error)
 	UpdatePledge(ctx context.Context, in *UpdatePledgeRequest, opts ...grpc.CallOption) (*UpdatePledgeReply, error)
 	DeletePledge(ctx context.Context, in *DeletePledgeRequest, opts ...grpc.CallOption) (*DeletePledgeReply, error)
 	GetPledge(ctx context.Context, in *GetPledgeRequest, opts ...grpc.CallOption) (*GetPledgeReply, error)
@@ -40,6 +41,15 @@ func NewPledgeClient(cc grpc.ClientConnInterface) PledgeClient {
 func (c *pledgeClient) CreatePledge(ctx context.Context, in *CreatePledgeRequest, opts ...grpc.CallOption) (*CreatePledgeReply, error) {
 	out := new(CreatePledgeReply)
 	err := c.cc.Invoke(ctx, "/api.pledge.v1.Pledge/CreatePledge", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *pledgeClient) UpdatePledgeStatus(ctx context.Context, in *UpdatePledgeStatusRequest, opts ...grpc.CallOption) (*UpdatePledgeStatusReply, error) {
+	out := new(UpdatePledgeStatusReply)
+	err := c.cc.Invoke(ctx, "/api.pledge.v1.Pledge/UpdatePledgeStatus", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -87,6 +97,7 @@ func (c *pledgeClient) ListPledge(ctx context.Context, in *ListPledgeRequest, op
 // for forward compatibility
 type PledgeServer interface {
 	CreatePledge(context.Context, *CreatePledgeRequest) (*CreatePledgeReply, error)
+	UpdatePledgeStatus(context.Context, *UpdatePledgeStatusRequest) (*UpdatePledgeStatusReply, error)
 	UpdatePledge(context.Context, *UpdatePledgeRequest) (*UpdatePledgeReply, error)
 	DeletePledge(context.Context, *DeletePledgeRequest) (*DeletePledgeReply, error)
 	GetPledge(context.Context, *GetPledgeRequest) (*GetPledgeReply, error)
@@ -100,6 +111,9 @@ type UnimplementedPledgeServer struct {
 
 func (UnimplementedPledgeServer) CreatePledge(context.Context, *CreatePledgeRequest) (*CreatePledgeReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreatePledge not implemented")
+}
+func (UnimplementedPledgeServer) UpdatePledgeStatus(context.Context, *UpdatePledgeStatusRequest) (*UpdatePledgeStatusReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdatePledgeStatus not implemented")
 }
 func (UnimplementedPledgeServer) UpdatePledge(context.Context, *UpdatePledgeRequest) (*UpdatePledgeReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdatePledge not implemented")
@@ -140,6 +154,24 @@ func _Pledge_CreatePledge_Handler(srv interface{}, ctx context.Context, dec func
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(PledgeServer).CreatePledge(ctx, req.(*CreatePledgeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Pledge_UpdatePledgeStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdatePledgeStatusRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PledgeServer).UpdatePledgeStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/api.pledge.v1.Pledge/UpdatePledgeStatus",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PledgeServer).UpdatePledgeStatus(ctx, req.(*UpdatePledgeStatusRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -226,6 +258,10 @@ var Pledge_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreatePledge",
 			Handler:    _Pledge_CreatePledge_Handler,
+		},
+		{
+			MethodName: "UpdatePledgeStatus",
+			Handler:    _Pledge_UpdatePledgeStatus_Handler,
 		},
 		{
 			MethodName: "UpdatePledge",

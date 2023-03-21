@@ -21,10 +21,22 @@ func NewAnimalRepo(data *Data, logger log.Logger) biz.AnimalRepo {
 	}
 }
 
-func (repo *AnimalRepo) Save(ctx context.Context, a *biz.Animal) (*biz.Animal, error) {
-	err := repo.data.gormDB.Create(a)
-	if err != nil {
-		return &biz.Animal{}, err.Error
+func (repo *AnimalRepo) Save(ctx context.Context, a *biz.AnimalRequest) (*biz.AnimalRequest, error) {
+
+	/*var nftId = big.NewInt(0)
+
+	receipt, err := repo.data.ethClient.TransactionReceipt(ctx, common.HexToHash("0x75c8457b8460325ad879c0bf7cb4f1683d1225c80b80595c5e3d2416591d3d7d"))
+	fmt.Println(receipt)
+
+	if err == nil && receipt != nil && receipt.Status == 1 {
+
+		nftId = receipt.Logs[4].Topics[6].Big()
+	}
+
+	a.TokenId = nftId.Int64()*/
+	err1 := repo.data.gormDB.Create(a)
+	if err1 != nil {
+		return &biz.AnimalRequest{}, err1.Error
 	}
 	return a, nil
 }

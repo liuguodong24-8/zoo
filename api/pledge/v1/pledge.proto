@@ -13,6 +13,12 @@ service Pledge {
 			body: "*"
 		};
 	};
+	rpc UpdatePledgeStatus (UpdatePledgeStatusRequest) returns (UpdatePledgeStatusReply){
+		option (google.api.http) = {
+			post: "/pledge/status",
+			body: "*"
+		};
+	};
 	rpc UpdatePledge (UpdatePledgeRequest) returns (UpdatePledgeReply);
 	rpc DeletePledge (DeletePledgeRequest) returns (DeletePledgeReply);
 	rpc GetPledge (GetPledgeRequest) returns (GetPledgeReply) {
@@ -31,6 +37,16 @@ message CreatePledgeReply {
 	int32  code = 1;
 	string msg = 2;
 }
+
+message UpdatePledgeStatusRequest {
+	string address = 1;
+}
+
+message UpdatePledgeStatusReply {
+	int32  code = 1;
+	string msg = 2;
+}
+
 
 message UpdatePledgeRequest {}
 message UpdatePledgeReply {}

@@ -13,3 +13,9 @@ data:
     addr: 127.0.0.1:6379
     read_timeout: 0.2s
     write_timeout: 0.2s
+  eth:
+    eth_addr: https://solemn-chaotic-diagram.bsc-testnet.discover.quiknode.pro/eb6d63f41760006db8004d873b316fd013da14bd/
+    zoo_addr: 0xAC800EBdfD98BcEB971E426c2167668f6B2E595A
+    zoo_token_addr: 0x5943B375a7404B0123e907072A9E0f2AB00dA636
+    zoo_nft_addr: 0x3CABA0FaeF66cAB1b3917f6D179151c18F51CB8b
+    zoo_private: 012cada4b1ad60b8b04a44a1119d0a9a179a1be5653193a68ff5bcfdc5791c76

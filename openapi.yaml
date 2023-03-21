@@ -3,19 +3,19 @@
 
 openapi: 3.0.3
 info:
-    title: Animal API
+    title: Pledge API
     version: 0.0.1
 paths:
-    /animal:
+    /pledge:
         post:
             tags:
-                - Animal
-            operationId: Animal_CreateAnimal
+                - Pledge
+            operationId: Pledge_CreatePledge
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/CreateAnimalRequest'
+                            $ref: '#/components/schemas/CreatePledgeRequest'
                 required: true
             responses:
                 "200":
@@ -23,23 +23,23 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/CreateAnimalReply'
+                                $ref: '#/components/schemas/CreatePledgeReply'
                 default:
                     description: Default error response
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /animal/compose:
+    /pledge/status:
         post:
             tags:
-                - Animal
-            operationId: Animal_ComposeAnimal
+                - Pledge
+            operationId: Pledge_UpdatePledgeStatus
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/ComposeAnimalRequest'
+                            $ref: '#/components/schemas/UpdatePledgeStatusRequest'
                 required: true
             responses:
                 "200":
@@ -47,109 +47,31 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/ComposeAnimalReply'
+                                $ref: '#/components/schemas/UpdatePledgeStatusReply'
                 default:
                     description: Default error response
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /animal/feeding:
-        post:
-            tags:
-                - Animal
-            operationId: Animal_FeedingAnimal
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/FeedingAnimalRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/FeedingAnimalReply'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /animal/kill:
-        post:
-            tags:
-                - Animal
-            operationId: Animal_KillAnimal
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/KillAnimalRequest'
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/KillAnimalReply'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /animal/{tokenId}:
+    /pledge/{address}:
         get:
             tags:
-                - Animal
-            operationId: Animal_GetAnimal
+                - Pledge
+            operationId: Pledge_GetPledge
             parameters:
-                - name: tokenId
+                - name: address
                   in: path
                   required: true
                   schema:
-                    type: integer
-                    format: int64
+                    type: string
             responses:
                 "200":
                     description: OK
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/GetAnimalReply'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /animals:
-        get:
-            tags:
-                - Animal
-            operationId: Animal_ListAnimal
-            parameters:
-                - name: page
-                  in: query
-                  schema:
-                    type: integer
-                    format: int32
-                - name: pageSize
-                  in: query
-                  schema:
-                    type: integer
-                    format: int32
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ListAnimalReply'
+                                $ref: '#/components/schemas/GetPledgeReply'
                 default:
                     description: Default error response
                     content:
@@ -158,50 +80,7 @@ paths:
                                 $ref: '#/components/schemas/Status'
 components:
     schemas:
-        AnimalInfo:
-            type: object
-            properties:
-                id:
-                    type: integer
-                    format: int64
-                address:
-                    type: string
-                stakeAmount:
-                    type: integer
-                    format: int64
-                level:
-                    type: integer
-                    format: int64
-                category:
-                    type: integer
-                    format: int64
-                capacity:
-                    type: integer
-                    format: int64
-                volume:
-                    type: integer
-                    format: int64
-                rarity:
-                    type: integer
-                    format: int64
-                sex:
-                    type: integer
-                    format: int64
-                age:
-                    type: integer
-                    format: int64
-                tokenId:
-                    type: integer
-                    format: int64
-                imgUrl:
-                    type: string
-                status:
-                    type: integer
-                    format: int64
-                startTime:
-                    type: integer
-                    format: int64
-        ComposeAnimalReply:
+        CreatePledgeReply:
             type: object
             properties:
                 code:
@@ -209,73 +88,15 @@ components:
                     format: int32
                 msg:
                     type: string
-        ComposeAnimalRequest:
-            type: object
-            properties:
-                tokenId1:
-                    type: integer
-                    format: int64
-                tokenId2:
-                    type: integer
-                    format: int64
-        CreateAnimalReply:
-            type: object
-            properties:
-                code:
-                    type: integer
-                    format: int32
-                msg:
-                    type: string
-        CreateAnimalRequest:
+        CreatePledgeRequest:
             type: object
             properties:
                 address:
                     type: string
-                stakeAmount:
+                price:
                     type: integer
                     format: int64
-                level:
-                    type: integer
-                    format: int64
-                category:
-                    type: integer
-                    format: int64
-                capacity:
-                    type: integer
-                    format: int64
-                volume:
-                    type: integer
-                    format: int64
-                rarity:
-                    type: integer
-                    format: int64
-                sex:
-                    type: integer
-                    format: int64
-                age:
-                    type: integer
-                    format: int64
-                tokenId:
-                    type: integer
-                    format: int64
-        FeedingAnimalReply:
-            type: object
-            properties:
-                code:
-                    type: integer
-                    format: int32
-                msg:
-                    type: string
-        FeedingAnimalRequest:
-            type: object
-            properties:
-                fromTokenId:
-                    type: integer
-                    format: int64
-                toTokenId:
-                    type: integer
-                    format: int64
-        GetAnimalReply:
+        GetPledgeReply:
             type: object
             properties:
                 code:
@@ -284,7 +105,7 @@ components:
                 msg:
                     type: string
                 data:
-                    $ref: '#/components/schemas/AnimalInfo'
+                    $ref: '#/components/schemas/PledgeInfo'
         GoogleProtobufAny:
             type: object
             properties:
@@ -293,32 +114,26 @@ components:
                     description: The type of the serialized message.
             additionalProperties: true
             description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
-        KillAnimalReply:
+        PledgeInfo:
             type: object
             properties:
-                code:
+                id:
                     type: integer
                     format: int32
-                msg:
-                    type: string
-        KillAnimalRequest:
-            type: object
-            properties:
                 tokenId:
                     type: integer
+                    format: int32
+                price:
+                    type: integer
                     format: int64
-        ListAnimalReply:
-            type: object
-            properties:
-                code:
+                status:
                     type: integer
                     format: int32
-                msg:
+                times:
+                    type: integer
+                    format: int32
+                address:
                     type: string
-                data:
-                    type: array
-                    items:
-                        $ref: '#/components/schemas/AnimalInfo'
         Status:
             type: object
             properties:
@@ -335,5 +150,18 @@ components:
                         $ref: '#/components/schemas/GoogleProtobufAny'
                     description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
             description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
+        UpdatePledgeStatusReply:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    format: int32
+                msg:
+                    type: string
+        UpdatePledgeStatusRequest:
+            type: object
+            properties:
+                address:
+                    type: string
 tags:
-    - name: Animal
+    - name: Pledge

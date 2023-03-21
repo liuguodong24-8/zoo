@@ -24,9 +24,28 @@ type Animal struct {
 	Address     string
 }
 
+type AnimalRequest struct {
+	ID          int64
+	Level       int64
+	Category    int64
+	Capacity    int64
+	Volume      int64
+	Rarity      int64
+	Sex         int64
+	Age         int64
+	StartTime   time.Time
+	KillTime    time.Time
+	StakeAmount int64
+	Status      int64
+	ImgUrl      string
+	TokenId     int64
+	Address     string
+	Hash        string
+}
+
 // AnimalRepo 定义animal的操作接口
 type AnimalRepo interface {
-	Save(ctx context.Context, Animal *Animal) (*Animal, error)
+	Save(ctx context.Context, Animal *AnimalRequest) (*AnimalRequest, error)
 	Get(ctx context.Context, Animal *Animal) (*Animal, error)
 	GetAnimal(context.Context, int64) (*Animal, error)
 	GetAnimals(context.Context, string, int32, int32) ([]*Animal, error)
@@ -45,7 +64,7 @@ func NewAnimalCase(repo AnimalRepo, logger log.Logger) *AnimalCase {
 	return &AnimalCase{repo: repo, log: log.NewHelper(logger)}
 }
 
-func (uc *AnimalCase) CreateAnimal(ctx context.Context, a *Animal) (*Animal, error) {
+func (uc *AnimalCase) CreateAnimal(ctx context.Context, a *AnimalRequest) (*AnimalRequest, error) {
 	uc.log.WithContext(ctx).Info("CreateAnimal: %v", a.ID)
 	return uc.repo.Save(ctx, a)
 }
